@@ -1,0 +1,11 @@
+local con = script.Parent
+local function logmsg(txt)
+textboxyeahyeahthingy.Text = textboxyeahyeahthingy.Text.. txt .. "\n"
+end
+local ls = game:GetService("LogService")
+
+ls.MessageOut:Connect(function(msg, msgType)
+    if msgType == Enum.MessageType.MessageWarning or msgType == Enum.MessageType.MessageError then
+        logmsgs(msg)
+    end
+end)
