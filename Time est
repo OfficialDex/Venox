@@ -1,0 +1,12 @@
+local textLabel = script.Parent
+
+local function updateTime()
+    local estTime = os.date("!*t")
+    estTime.hour = (estTime.hour - 5) % 24
+    textLabel.Text = string.format("Time(EST): %02d:%02d:%02d", estTime.hour, estTime.min, estTime.sec)
+end
+
+while true do
+    updateTime()
+    wait(1)
+en
