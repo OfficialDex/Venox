@@ -1,0 +1,13 @@
+local textLabel = script.Parent
+local players = game:GetService("Players")
+
+local function updatePlayerCount()
+    while true do
+        local currentPlayers = #players:GetPlayers()
+        local maxPlayers = players.MaxPlayers
+        textLabel.Text = string.format("Players: %d/%d", currentPlayers, maxPlayers)
+        wait(0.5)
+    end
+end
+
+spawn(updatePlayerCount)
