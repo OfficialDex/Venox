@@ -1,0 +1,12 @@
+local textLabel = script.Parent
+local player = game.Players.LocalPlayer
+
+local function updatePing()
+    while true do
+        local ping = player:GetNetworkPing() * 1000
+        textLabel.Text = string.format("Ping: %.0f ms", ping)
+        wait(1)
+    end
+end
+
+spawn(updatePing
