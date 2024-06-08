@@ -1,0 +1,17 @@
+local textLabel = script.Parent
+
+local RunService = game:GetService("RunService")
+
+local lastTime = tick()
+local frameCount = 0
+
+RunService.RenderStepped:Connect(function()
+    frameCount = frameCount + 1
+    local currentTime = tick()
+    if currentTime - lastTime >= 1 then
+        local fps = frameCount / (currentTime - lastTime)
+        textLabel.Text = string.format("FPS: %.2f", fps)
+        frameCount = 0
+        lastTime = currentTime
+    end
+end
