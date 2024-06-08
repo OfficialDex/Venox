@@ -1,0 +1,13 @@
+local player = game.Players.LocalPlayer
+local imageLabel = script.Parent
+
+local userId = player.UserId
+local thumbnailType = Enum.ThumbnailType.HeadShot
+local thumbnailSize = Enum.ThumbnailSize.Size420x420
+local content, isReady = game.Players:GetUserThumbnailAsync(userId, thumbnailType, thumbnailSize)
+
+if isReady then
+    imageLabel.Image = content
+else
+    imageLabel.Image = ""
+end
