@@ -1,0 +1,40 @@
+local TextBox = script.Parent
+
+local keywords = {
+    "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
+    "goto", "if", "in", "local", "nil", "not", "or", "repeat", "return",
+    "then", "true", "until", "while",
+    "Instance", "workspace", "script", "game", "wait", "print", "pairs", "ipairs",
+    "Vector3", "CFrame", "Color3", "BrickColor", "UDim2"
+}
+
+local keywordPattern = "\\b(" .. table.concat(keywords, "|") .. ")\\b"
+local commentPattern = "%-%-.-\n"
+local stringPattern = [[".-"]]
+local numberPattern = "%d+"
+
+local colors = {
+    keyword = "rgb(0, 0, 255)",
+    comment = "rgb(0, 128, 0)",
+    string = "rgb(163, 21, 21)",
+    number = "rgb(128, 0, 128)"
+}
+
+local function applyColor(text, pattern, color)
+    return text:gsub(pattern, function(match)
+        return string.format('<font color="%s">%s</font>', color, match)
+    end)
+end
+
+local function applySyntaxHighlighting(text)
+    text = applyColor(text, keywordPattern, colors.keyword)
+    text = applyColor(text, commentPattern, colors.comment)
+    text = applyColor(text, stringPattern, colors.string)
+    text = applyColor(text, numberPattern, colors.number)
+    return text
+end
+
+TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+    local highlightedText = applySyntaxHighlighting(TextBox.Text)
+    TextBox.Text = highlightedText
+end)
