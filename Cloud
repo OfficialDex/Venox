@@ -1,0 +1,133 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local plr = Players.LocalPlayer
+
+local btn = script.Parent
+
+local box = btn.Parent
+
+local scroll = box.Parent
+
+local function cornerui(uiElem, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius)
+    corner.Parent = uiElem
+end
+
+cornerui(box, 10)
+cornerui(btn, 10)
+cornerui(scroll, 10)
+
+local function result_template()
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, -10, 0, 100)
+    frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    frame.BorderSizePixel = 0
+
+    local label = Instance.new("TextLabel")
+    label.Name = "ScriptName"
+    label.Size = UDim2.new(0.8, 0, 0.5, 0)
+    label.Position = UDim2.new(0.1, 0, 0.1, 0)
+    label.Font = Enum.Font.SourceSans
+    label.TextSize = 24
+    label.TextColor3 = Color3.fromRGB(0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Parent = frame
+
+    local copyBtn = Instance.new("TextButton")
+    copyBtn.Name = "CopyButton"
+    copyBtn.Text = "Copy Script"
+    copyBtn.Size = UDim2.new(0.6, 0, 0.3, 0)
+    copyBtn.Position = UDim2.new(0.2, 0, 0.6, 0)
+    copyBtn.Font = Enum.Font.SourceSans
+    copyBtn.TextSize = 18
+    copyBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 250)
+    copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyBtn.BorderSizePixel = 0
+    copyBtn.Parent = frame
+
+    cornerui(frame, 10)
+    cornerui(copyBtn, 10)
+
+    return frame
+end
+
+local function clearresults()
+    for _, child in pairs(scroll:GetChildren()) do
+        if child:IsA("Frame") then
+            child:Destroy()
+        end
+    end
+end
+
+local function showresults(res)
+    clearresults()
+
+    for i, r in ipairs(res) do
+        local rf = result_template()
+        rf.Parent = scroll
+        rf.Position = UDim2.new(0, 5, 0, (i - 1) * 110 + 5)
+        rf.ScriptName.Text = r.title
+
+        rf.CopyButton.MouseButton1Click:Connect(function()
+            local scriptText = r.script
+            if not scriptText then
+                warn("script text is missing bo: ", r.title)
+                return
+            end
+            
+            setclipboard(scriptText)
+            print("script copied yay: ", scriptText)
+        end)
+    end
+end
+
+local function searchscripts(query)
+    local encoded_query = HttpService:UrlEncode(query)
+    local url = string.format("https://scriptblox.com/api/script/search?q=%s&max=20&mode=free", encoded_query)
+    
+    local response
+    if syn and syn.request then
+        response = syn.request({
+            Url = url,
+            Method = "GET"
+        })
+    elseif http_request then
+        response = http_request({
+            Url = url,
+            Method = "GET"
+        })
+    elseif request then
+        response = request({
+            Url = url,
+            Method = "GET"
+        })
+    else
+        warn("No suitable HTTP request function found.")
+        return
+    end
+
+    if response.StatusCode == 200 then
+        local data = HttpService:JSONDecode(response.Body)
+        if data and data.result and data.result.scripts then
+            local validRes = {}
+            for _, script in ipairs(data.result.scripts) do
+                if not script.isPatched then
+                    table.insert(validRes, script)
+                end
+            end
+            showresults(validRes)
+        else
+            warn("No results found or an error occurred.")
+        end
+    else
+        warn("Failed to fetch scripts. Status code:", response.StatusCode)
+    end
+end
+
+btn.MouseButton1Click:Connect(function()
+    local query = box.Text
+    if query and query ~= "" then
+        searchscripts(query)
+    end
+end
