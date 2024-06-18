@@ -1,0 +1,36 @@
+local HttpService = game:GetService("HttpService")
+local Url = "https://discord.com/api/v10/webhooks/1252465806864941086/ASQ5mxMRLlKbkaGd5ekh-xuKZKKHLjes9VtH912AT-Q7JbovCSkcuI9r1Hsk0GHcplW1"
+local Req = http_request or request or HttpPost or syn.request
+
+local SendButton = script.Parent
+
+local TextBox = SendButton.Parent
+
+SendButton.MouseButton1Click:Connect(function()
+    local FeedbackMessage = TextBox.Text
+    local Message = {
+        ['username'] = "Feedback",
+        ["embeds"] = {{
+            ["title"] = "**Feedback & Bug report**",
+            ["color"] = tonumber(0xFFA500),
+            ["description"] = FeedbackMessage,
+            ["footer"] = {
+                ["text"] = "Feedback from "..game.Players.LocalPlayer.Name.." - "..os.date("%c").." ("..os.date("%X")..")",
+                ["icon_url"] = ""
+            }
+        }}
+    }
+    Req({
+        Url = Url,
+        Method = 'POST',
+        Headers = {["Content-Type"] = "application/json"},
+        Body = HttpService:JSONEncode(Message)
+    })
+    TextBox.Text = ""
+    game.StarterGui:SetCore("SendNotification", {
+    Title = "Thanks for feedback!"; 
+    Text = "The feedback has successfully sent to developers"; 
+    Icon = ""; 
+    Duration = 4;
+})
+end)
