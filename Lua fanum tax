@@ -1,0 +1,244 @@
+local gui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local corner = Instance.new("UICorner")
+local label = Instance.new("TextLabel")
+local box = Instance.new("TextBox")
+local execBtn = Instance.new("TextButton")
+local execCorner = Instance.new("UICorner")
+local clearBtn = Instance.new("TextButton")
+local clearCorner = Instance.new("UICorner")
+
+gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+gui.Name = "gui bruh"
+
+frame.Parent = gui
+frame.Size = UDim2.new(0.9, 0, 0.7, 0)
+frame.Position = UDim2.new(0.05, 0, 0.15, 0)
+frame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+frame.Active = true
+frame.Draggable = true
+
+corner.Parent = frame
+
+label.Parent = frame
+label.Size = UDim2.new(1, -20, 0.7, -20)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 1
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.TextXAlignment = Enum.TextXAlignment.Left
+label.TextYAlignment = Enum.TextYAlignment.Top
+label.Font = Enum.Font.Code
+label.TextSize = 14
+label.Text = ""
+label.TextWrapped = true
+label.RichText = true
+label.ZIndex = 2
+
+box.Parent = frame
+box.Size = UDim2.new(1, -20, 0.7, -20)
+box.Position = UDim2.new(0, 10, 0, 10)
+box.MultiLine = true
+box.BackgroundTransparency = 1
+box.TextTransparency = 1
+box.TextColor3 = Color3.fromRGB(255, 255, 255)
+box.Text = ""
+box.ClearTextOnFocus = false
+box.TextXAlignment = Enum.TextXAlignment.Left
+box.TextYAlignment = Enum.TextYAlignment.Top
+box.Font = Enum.Font.Code
+box.TextSize = 14
+box.ZIndex = 1
+
+execBtn.Parent = frame
+execBtn.Size = UDim2.new(0.45, -10, 0.15, -10)
+execBtn.Position = UDim2.new(0, 10, 0.75, 0)
+execBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+execBtn.Text = "Execute"
+execBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+execBtn.TextWrapped = true
+
+execCorner.Parent = execBtn
+
+clearBtn.Parent = frame
+clearBtn.Size = UDim2.new(0.45, -10, 0.15, -10)
+clearBtn.Position = UDim2.new(0.55, 0, 0.75, 0)
+clearBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+clearBtn.Text = "Clear"
+clearBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+clearBtn.TextWrapped = true
+
+clearCorner.Parent = clearBtn
+
+local function execute()
+    local scriptSource = box.Text
+    local func, errorMessage = loadstring(scriptSource)
+    if func then
+        local success, errorMsg = pcall(func)
+        if not success then
+            warn(errorMsg)
+        end
+    else
+        warn(errorMessage)
+    end
+end
+
+local function clear()
+    box.Text = ""
+    label.Text = ""
+end
+
+execBtn.MouseButton1Click:Connect(execute)
+clearBtn.MouseButton1Click:Connect(clear)
+
+local function highlight(box, label)
+    local vars = {
+        ["and"] = Color3.fromRGB(255, 85, 0),
+        ["break"] = Color3.fromRGB(255, 85, 0),
+        ["do"] = Color3.fromRGB(0, 255, 85),
+        ["else"] = Color3.fromRGB(255, 0, 170),
+        ["elseif"] = Color3.fromRGB(255, 85, 0),
+        ["end"] = Color3.fromRGB(85, 255, 0),
+        ["false"] = Color3.fromRGB(255, 0, 85),
+        ["for"] = Color3.fromRGB(0, 85, 255),
+        ["function"] = Color3.fromRGB(0, 255, 170),
+        ["if"] = Color3.fromRGB(170, 0, 255),
+        ["in"] = Color3.fromRGB(255, 170, 0),
+        ["local"] = Color3.fromRGB(0, 170, 255),
+        ["nil"] = Color3.fromRGB(170, 0, 255),
+        ["not"] = Color3.fromRGB(255, 85, 0),
+        ["or"] = Color3.fromRGB(255, 85, 0),
+        ["repeat"] = Color3.fromRGB(0, 255, 170),
+        ["return"] = Color3.fromRGB(85, 0, 255),
+        ["then"] = Color3.fromRGB(170, 255, 0),
+        ["true"] = Color3.fromRGB(0, 255, 85),
+        ["until"] = Color3.fromRGB(0, 255, 170),
+        ["while"] = Color3.fromRGB(255, 0, 85),
+        ["print"] = Color3.fromRGB(255, 170, 0),
+        ["assert"] = Color3.fromRGB(255, 85, 255),
+        ["collectgarbage"] = Color3.fromRGB(255, 85, 255),
+        ["dofile"] = Color3.fromRGB(255, 85, 255),
+        ["error"] = Color3.fromRGB(255, 85, 255),
+        ["getfenv"] = Color3.fromRGB(255, 85, 255),
+        ["getmetatable"] = Color3.fromRGB(255, 85, 255),
+        ["ipairs"] = Color3.fromRGB(255, 85, 255),
+        ["load"] = Color3.fromRGB(255, 85, 255),
+        ["loadfile"] = Color3.fromRGB(255, 85, 255),
+        ["loadstring"] = Color3.fromRGB(255, 85, 255),
+        ["next"] = Color3.fromRGB(255, 85, 255),
+        ["pairs"] = Color3.fromRGB(255, 85, 255),
+        ["pcall"] = Color3.fromRGB(255, 85, 255),
+        ["print"] = Color3.fromRGB(255, 85, 255),
+        ["rawequal"] = Color3.fromRGB(255, 85, 255),
+        ["rawget"] = Color3.fromRGB(255, 85, 255),
+        ["rawset"] = Color3.fromRGB(255, 85, 255),
+        ["select"] = Color3.fromRGB(255, 85, 255),
+        ["setfenv"] = Color3.fromRGB(255, 85, 255),
+        ["setmetatable"] = Color3.fromRGB(255, 85, 255),
+        ["tonumber"] = Color3.fromRGB(255, 85, 255),
+        ["tostring"] = Color3.fromRGB(255, 85, 255),
+        ["type"] = Color3.fromRGB(255, 85, 255),
+        ["unpack"] = Color3.fromRGB(255, 85, 255),
+        ["xpcall"] = Color3.fromRGB(255, 85, 255),
+        ["hookfunction"] = Color3.fromRGB(255, 85, 255),
+        ["hookmetamethod"] = Color3.fromRGB(255, 85, 255),
+        ["getrawmetatable"] = Color3.fromRGB(255, 85, 255),
+        ["setreadonly"] = Color3.fromRGB(255, 85, 255),
+        ["getsenv"] = Color3.fromRGB(255, 85, 255),
+        ["getgenv"] = Color3.fromRGB(255, 85, 255),
+        ["getrenv"] = Color3.fromRGB(255, 85, 255),
+        ["getfenv"] = Color3.fromRGB(255, 85, 255),
+        ["getreg"] = Color3.fromRGB(255, 85, 255),
+        ["getgc"] = Color3.fromRGB(255, 85, 255),
+        ["isreadonly"] = Color3.fromRGB(255, 85, 255),
+        ["newcclosure"] = Color3.fromRGB(255, 85, 255),
+        ["fireclickdetector"] = Color3.fromRGB(255, 85, 255),
+        ["fireproximityprompt"] = Color3.fromRGB(255, 85, 255),
+        ["firetouchinterest"] = Color3.fromRGB(255, 85, 255),
+        ["getnamecallmethod"] = Color3.fromRGB(255, 85, 255),
+        ["setnamecallmethod"] = Color3.fromRGB(255, 85, 255),
+        ["getupvalue"] = Color3.fromRGB(255, 85, 255),
+        ["setupvalue"] = Color3.fromRGB(255, 85, 255),
+        ["getproto"] = Color3.fromRGB(255, 85, 255),
+        ["setproto"] = Color3.fromRGB(255, 85, 255),
+        ["getconstants"] = Color3.fromRGB(255, 85, 255),
+        ["setconstant"] = Color3.fromRGB(255, 85, 255),
+        ["getcallingscript"] = Color3.fromRGB(255, 85, 255),
+        ["getscriptclosure"] = Color3.fromRGB(255, 85, 255),
+        ["decompile"] = Color3.fromRGB(255, 85, 255),
+        ["checkcaller"] = Color3.fromRGB(255, 85, 255),
+        ["getrawclosure"] = Color3.fromRGB(255, 85, 255),
+        ["clonefunction"] = Color3.fromRGB(255, 85, 255),
+        ["getconstant"] = Color3.fromRGB(255, 85, 255),
+        ["setconstant"] = Color3.fromRGB(255, 85, 255),
+        ["getscript"] = Color3.fromRGB(255, 85, 255),
+        ["setthreadcontext"] = Color3.fromRGB(255, 85, 255),
+        ["getthreadcontext"] = Color3.fromRGB(255, 85, 255),
+        ["debug.setupvalue"] = Color3.fromRGB(255, 85, 255),
+        ["debug.getupvalue"] = Color3.fromRGB(255, 85, 255),
+        ["debug.getregistry"] = Color3.fromRGB(255, 85, 255),
+        ["debug.getinfo"] = Color3.fromRGB(255, 85, 255),
+        ["debug.sethook"] = Color3.fromRGB(255, 85, 255),
+        ["debug.getmetatable"] = Color3.fromRGB(255, 85, 255),
+        ["debug.setmetatable"] = Color3.fromRGB(255, 85, 255),
+        ["writefile"] = Color3.fromRGB(0, 255, 255),
+        ["readfile"] = Color3.fromRGB(0, 255, 255),
+        ["isfile"] = Color3.fromRGB(0, 255, 255),
+        ["isfolder"] = Color3.fromRGB(0, 255, 255),
+        ["makefolder"] = Color3.fromRGB(0, 255, 255),
+        ["delfile"] = Color3.fromRGB(0, 255, 255),
+        ["delfolder"] = Color3.fromRGB(0, 255, 255),
+        ["listfiles"] = Color3.fromRGB(0, 255, 255),
+        ["listfolders"] = Color3.fromRGB(0, 255, 255),
+        ["appendfile"] = Color3.fromRGB(0, 255, 255),
+        ["httpget"] = Color3.fromRGB(0, 255, 255),
+        ["httppost"] = Color3.fromRGB(0, 255, 255),
+        ["HttpGet"] = Color3.fromRGB(0, 255, 255),
+        ["HttpPost"] = Color3.fromRGB(0, 255, 255),
+        ["game"] = Color3.fromRGB(0, 85, 255),
+        ["workspace"] = Color3.fromRGB(0, 85, 255),
+        ["players"] = Color3.fromRGB(0, 85, 255),
+        ["Lighting"] = Color3.fromRGB(0, 85, 255),
+        ["ReplicatedStorage"] = Color3.fromRGB(0, 85, 255),
+        ["StarterGui"] = Color3.fromRGB(0, 85, 255),
+        ["StarterPack"] = Color3.fromRGB(0, 85, 255),
+        ["Teams"] = Color3.fromRGB(0, 85, 255),
+        ["SoundService"] = Color3.fromRGB(0, 85, 255),
+        ["RunService"] = Color3.fromRGB(0, 85, 255),
+        ["Debris"] = Color3.fromRGB(0, 85, 255),
+        ["Players"] = Color3.fromRGB(0, 85, 255),
+        ["TweenService"] = Color3.fromRGB(0, 85, 255),
+        ["UserInputService"] = Color3.fromRGB(0, 85, 255),
+        ["ContextActionService"] = Color3.fromRGB(0, 85, 255),
+        ["PathfindingService"] = Color3.fromRGB(0, 85, 255),
+        ["GuiService"] = Color3.fromRGB(0, 85, 255),
+        ["TeleportService"] = Color3.fromRGB(0, 85, 255),
+        ["GamePassService"] = Color3.fromRGB(0, 85, 255),
+        ["Chat"] = Color3.fromRGB(0, 85, 255),
+        ["Players.LocalPlayer"] = Color3.fromRGB(0, 85, 255),
+        ["game:GetService"] = Color3.fromRGB(0, 85, 255),
+        ["GetService"] = Color3.fromRGB(, 128, 128),
+    }
+    
+    local function addcolor()
+        local text = box.Text
+        local hltext = text
+        for word, color in pairs(vars) do
+            local r, g, b = math.floor(color.r * 255), math.floor(color.g * 255), math.floor(color.b * 255)
+            local colortag = string.format("<font color=\"rgb(%d,%d,%d)\">", r, g, b)
+            local pattern = "([^%w_])("..word..")([^%w_])"
+            hltext = hltext:gsub(pattern, function(before, word, after)
+                return before .. colortag .. word .. "</font>" .. after
+            end)
+            hltext = hltext:gsub("^("..word..")([^%w_])", colortag .. "%1</font>%2")
+            hltext = hltext:gsub("([^%w_])("..word..")$", "%1" .. colortag .. "%2</font>")
+        end
+        label.Text = hltext
+    end
+
+    box:GetPropertyChangedSignal("Text"):Connect(function()
+        addcolor()
+    end)
+end
+
+
+highlight(box, label)
