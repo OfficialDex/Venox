@@ -1,0 +1,41 @@
+local scrollingFrame = script.Parent
+local loggingEnabled = false
+
+local function logMessage(message, color)
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 0, 20) -- Adjust size as needed
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = color
+    textLabel.Text = message
+    textLabel.TextWrapped = true
+    textLabel.Parent = scrollingFrame
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #scrollingFrame:GetChildren() * 20)
+end
+
+local function logError(errorMessage)
+    logMessage('[Error]: ' .. errorMessage, Color3.new(1, 0, 0))
+end
+
+local function logWarning(warningMessage)
+    logMessage('[Warning]: ' .. warningMessage, Color3.new(1, 1, 0))
+end
+
+local function logOutput(outputMessage)
+    logMessage('[Output]: ' .. outputMessage, Color3.new(0, 1, 0))
+end
+
+game:GetService("LogService").MessageOut:Connect(function(message, messageType)
+    if not loggingEnabled then return end
+
+    if messageType == Enum.MessageType.MessageError then
+        logError(message)
+    elseif messageType == Enum.MessageType.MessageWarning then
+        logWarning(message)
+    else
+        logOutput(message)
+    end
+end)
+
+task.delay(4, function()
+    loggingEnabled = true
+end)
