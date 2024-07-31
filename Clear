@@ -1,0 +1,11 @@
+local clearButton = script.Parent  -- Assuming the script is a child of the button
+local scrollingFrame = script.Parent.Parent:WaitForChild("ScrollingFrame")  -- Adjust the path if necessary
+
+clearButton.MouseButton1Click:Connect(function()
+    for _, child in ipairs(scrollingFrame:GetChildren()) do
+        if child:IsA("TextLabel") then
+            child:Destroy()
+        end
+    end
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+end)
