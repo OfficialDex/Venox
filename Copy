@@ -1,0 +1,24 @@
+local copyButton = script.Parent
+local scrollingFrame = copyButton.Parent
+local Players = game:GetService("Players")
+
+copyButton.MouseButton1Click:Connect(function()
+    local logMessages = {}
+    for _, child in ipairs(scrollingFrame:GetChildren()) do
+        if child:IsA("TextLabel") then
+            table.insert(logMessages, child.Text)
+        end
+    end
+    
+    local logString = table.concat(logMessages, "\n")
+    
+    if setclipboard then 
+        setclipboard(logString)
+        local player = Players.LocalPlayer
+        if player then
+            print("Logs copied to clipboard!")
+        end
+    else
+        warn("Clipboard functionality is not available")
+    end
+end)
