@@ -1,27 +1,37 @@
 local scrollingFrame = script.Parent
 local loggingEnabled = false
 
-local function logMessage(message, color)
+if not scrollingFrame:FindFirstChildOfClass("UIListLayout") then
+    local uiListLayout = Instance.new("UIListLayout")
+    uiListLayout.Parent = scrollingFrame
+end
+
+local function createLogLabel(message)
     local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0, 20) -- Adjust size as needed
+    textLabel.Size = UDim2.new(1, 0, 0, 20)  -- Adjust size as needed
     textLabel.BackgroundTransparency = 1
-    textLabel.TextColor3 = color
     textLabel.Text = message
     textLabel.TextWrapped = true
     textLabel.Parent = scrollingFrame
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #scrollingFrame:GetChildren() * 20)
+
+    -- Adjust CanvasSize to fit all labels
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, scrollingFrame.UIListLayout.AbsoluteContentSize.Y)
+end
+
+local function logMessage(message)
+    createLogLabel(message)
 end
 
 local function logError(errorMessage)
-    logMessage('[Error]: ' .. errorMessage, Color3.new(1, 0, 0))
+    logMessage("[Error]: " .. errorMessage)
 end
 
 local function logWarning(warningMessage)
-    logMessage('[Warning]: ' .. warningMessage, Color3.new(1, 1, 0))
+    logMessage("[Warning]: " .. warningMessage)
 end
 
 local function logOutput(outputMessage)
-    logMessage('[Output]: ' .. outputMessage, Color3.new(0, 1, 0))
+    logMessage("[Output]: " .. outputMessage)
 end
 
 game:GetService("LogService").MessageOut:Connect(function(message, messageType)
